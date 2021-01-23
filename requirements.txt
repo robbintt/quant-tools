@@ -1,0 +1,7 @@
+numpy==1.19.5
+pandas==1.2.1
+python-dateutil==2.8.1
+pytz==2020.5
+QuantLib==1.21
+QuantLib-Python==1.18
+six==1.15.0

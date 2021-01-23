@@ -21,6 +21,16 @@ QuantLib has python bindings but [PyQL APIs are more Pythonic](https://www.entho
 > Why building a new set of QuantLib wrappers for Python? The SWIG wrappers provide a very good coverage of the library but have [a number of pain points](https://github.com/enthought/pyql/blob/master/docs/source/getting_started.rst)
 
 
+## QuantLib-Python
+
+This seems like what I want. Precompiled for whatever.
+
+- [QuantLib-Python Docs](https://quantlib-python-docs.readthedocs.io/en/latest/)
+- [Install](https://www.quantlib.org/install/macosx-python.shtml) with pip in Python3.
+
+
+
+
 ## Resources
 
 - [awesome-quant#python](https://github.com/wilsonfreitas/awesome-quant#python)
