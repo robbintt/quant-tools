@@ -3,6 +3,13 @@
 Playing with Python quant libraries
 
 
+
+## Resources
+
+- [awesome-quant#python](https://github.com/wilsonfreitas/awesome-quant#python)
+- [quant.stackexchange.com](https://quant.stackexchange.com/)
+
+
 ## QuantLib and PyQL (wrapper)
 
 - [QuantLib](https://www.quantlib.org/)
@@ -33,6 +40,3 @@ This seems like what I want. Precompiled for whatever.
 
 
 
-## Resources
-
-- [awesome-quant#python](https://github.com/wilsonfreitas/awesome-quant#python)
