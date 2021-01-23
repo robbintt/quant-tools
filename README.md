@@ -10,6 +10,8 @@ Playing with Python quant libraries
 
 ### QuantLib
 
+- [QuantLib Notebooks](https://www.youtube.com/playlist?list=PLu_PrO8j6XAvOAlZND9WUPwTHY_GYhJVr) youtube videos provide feature examples.
+
 > The QuantLib project is aimed at providing a comprehensive software framework for quantitative finance. QuantLib is a free/open-source library for modeling, trading, and risk management in real-life.
 
 ### PyQL
