@@ -62,7 +62,7 @@ class Mortgage:
         rate: Rate,
         price: Money,
         down_payment: Money,
-        value: Money = None,
+        value: Money or None = None,
     ):
         """
         term: months  # needs to be its own object?
@@ -83,6 +83,8 @@ class Mortgage:
         # this is just the first month's interest payment... too simple
         self.periodic_payment = self.principal * self.rate.periodic_rate
 
+    def interest(self):
+        self.term * self.rate
 
 
 class Asset:
@@ -110,27 +112,61 @@ class Asset:
         return self.value * (((1 + self.rate.apy) ** period))
 
 
+class Loan(Asset):
+
+    def __init__(self, value, rate, term):
+        super().__init__(value, rate)
+        self.term = term
+
+        self.monthly_payment = self.rate.periodic_rate * value / (1 - (1 + self.rate.periodic_rate) ** (-1 * term))
+
+        # principal repayment for month n
+        #p = (d - r * s) * ((1 + r)**n - 1) / r
+
+
+
+    #def interest(self, period_range=range(0, term)):
+        ''' return interest over a slice of the term
+
+        TODO: validate range is within term
+        '''
+
+
 
 if __name__ == "__main__":
 
+    '''
     r = Rate(Decimal("0.05"), "monthly")
-    print(r.period)
-    print(r.rate)
-    print(r.apy)
-
+    print(r.period, r.rate, r.apy)
     m = Mortgage(30 * 12, r, Money(1000000, USD), Money(200000, USD))
+    # currently just has first payment, not done
+    print(m.price, m.periodic_payment)
+    '''
 
-    print(m.price)
-    #print(m.rate.apy * m.principal)
-    print(m.periodic_payment)
+    loan = Loan(Money(10000, USD), Rate(Decimal("0.8"), "monthly"), 5*12)
+    print(loan.value, loan.rate.apy, loan.term, loan.monthly_payment)
 
+    '''
     a = Asset(Money(1000000, USD), r)
     print(a.projected_appreciation(5))
     print(a.projected_appreciation_percent(5))
+    '''
 
+    '''
+    house = Asset(Money(1000000, USD), Rate(Decimal("0.03"), "yearly"))
+    mortgage = Mortgage(30*12, Rate(Decimal("0.0295"), "monthly"), house.value, house.value*0.2)
+    for i in range(1,31):
+        # isn't a loan just someone else's asset that you pay on a schedule?
+        # should loan inherit from asset?
+        print(house.projected_appreciation(i) - house.value - mortgage.)
+    '''
+
+
+    '''
     car = Asset(Money(35000, USD), Rate(Decimal("-0.15"), "yearly"))
     for i in range(1, 11):
         print("Car value in year {}: {}, {} %".format(i, car.projected_appreciation(i), car.projected_appreciation_percent(i)))
+    '''
 
     # do i want a state machine to advance the period and give the results?
     # or do i want a stateless model to give the result for a slice of the loan?
