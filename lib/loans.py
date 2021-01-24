@@ -141,6 +141,10 @@ class StandardLoan(Asset):
         '''
         return self.monthly_payment - self.princ_remaining(period) * self.rate.periodic_rate
 
+    def ipmt_range(self, period_range):
+        # use a generator instead...
+        return sum([self.ipmt(i) for i in period_range])
+
     #def interest(self, period_range=range(0, term)):
         ''' return interest over a slice of the term
 
@@ -161,11 +165,15 @@ if __name__ == "__main__":
 
     loan = StandardLoan(Money(10000, USD), Rate(Decimal("0.08"), "monthly"), 5*12)
     print(loan.value, loan.rate.apy, loan.term, loan.monthly_payment)
-    ppaid = 0
-    for i in range(0, 5*12):
+    ipaid = 0
+    for i in range(3, 15):
         print(loan.princ_remaining(i), loan.ipmt(i), loan.ppmt(i))
-        ppaid += loan.ppmt(i)
-    print(ppaid)
+        ipaid += loan.ipmt(i)
+    print(ipaid)
+
+    r = range(3, 15)
+    interest = loan.ipmt_range(r)
+    print(f"Interest for range {r} is {interest}")
 
     '''
     a = Asset(Money(1000000, USD), r)
