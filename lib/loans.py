@@ -126,6 +126,8 @@ class StandardLoan(Asset):
 
     def princ_remaining(self, period):
         ''' return principal remaining
+
+        If any additional principal payment is paid, this formula is no longer valid.
         '''
         if period not in range(0, self.term):
             raise(Exception(f"Loan period '{period}' requested was not in range of loan term range (0,{self.term})."))
@@ -145,11 +147,17 @@ class StandardLoan(Asset):
         # use a generator instead...
         return sum([self.ipmt(i) for i in period_range])
 
-    #def interest(self, period_range=range(0, term)):
-        ''' return interest over a slice of the term
-
-        TODO: validate range is within term
-        '''
+    def addl_princ_payment_interest_reduction(self, period, payment):
+        """ Change in total interest paid when additional principal is paid during a period
+        There is a reverse method called 'cash out refinance' that might also be interesting to implement
+        I believe both can be implemented here within the same method
+        """
+        # loan basis changes... how to capture in model?
+        # monthly payment does not change, so you must change ppmt 
+        # period will also change
+        # this is a stateful thing, so it should be part of the model creation or as a function input
+        # this is almost a "new loan" since it's a breakpoint in which the loan term is reduced
+        # basically you can recalculate the loan term from: principal, monthly_payment, rate
 
 
 
@@ -163,7 +171,13 @@ if __name__ == "__main__":
     print(m.price, m.periodic_payment)
     '''
 
-    loan = StandardLoan(Money(10000, USD), Rate(Decimal("0.08"), "monthly"), 5*12)
+    loan_payload = {
+            "value": Money(10000, USD),
+            "rate": Rate(Decimal("0.08"), "monthly"),
+            "term": 5*12 }
+
+    #loan = StandardLoan(Money(10000, USD), Rate(Decimal("0.08"), "monthly"), 5*12)
+    loan = StandardLoan(**loan_payload)
     print(loan.value, loan.rate.apy, loan.term, loan.monthly_payment)
     ipaid = 0
     for i in range(3, 15):
