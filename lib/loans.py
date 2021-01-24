@@ -112,18 +112,34 @@ class Asset:
         return self.value * (((1 + self.rate.apy) ** period))
 
 
-class Loan(Asset):
+class StandardLoan(Asset):
 
     def __init__(self, value, rate, term):
         super().__init__(value, rate)
         self.term = term
-
-        self.monthly_payment = self.rate.periodic_rate * value / (1 - (1 + self.rate.periodic_rate) ** (-1 * term))
-
         # principal repayment for month n
         #p = (d - r * s) * ((1 + r)**n - 1) / r
 
+    @property
+    def monthly_payment(self):
+        return self.rate.periodic_rate * self.value / (1 - (1 + self.rate.periodic_rate) ** (-1 * self.term))
 
+    def princ_remaining(self, period):
+        ''' return principal remaining
+        '''
+        if period not in range(0, self.term):
+            raise(Exception(f"Loan period '{period}' requested was not in range of loan term range (0,{self.term})."))
+        return (self.monthly_payment / self.rate.periodic_rate) * (1 - (1 / (1 + self.rate.periodic_rate)) ** (self.term - period))
+
+    def ipmt(self, period):
+        ''' return interest portion of the payment for the loan period
+        '''
+        return self.princ_remaining(period) * self.rate.periodic_rate
+
+    def ppmt(self, period):
+        ''' return principal portion of the payment for the loan period
+        '''
+        return self.monthly_payment - self.princ_remaining(period) * self.rate.periodic_rate
 
     #def interest(self, period_range=range(0, term)):
         ''' return interest over a slice of the term
@@ -143,8 +159,13 @@ if __name__ == "__main__":
     print(m.price, m.periodic_payment)
     '''
 
-    loan = Loan(Money(10000, USD), Rate(Decimal("0.8"), "monthly"), 5*12)
+    loan = StandardLoan(Money(10000, USD), Rate(Decimal("0.08"), "monthly"), 5*12)
     print(loan.value, loan.rate.apy, loan.term, loan.monthly_payment)
+    ppaid = 0
+    for i in range(0, 5*12):
+        print(loan.princ_remaining(i), loan.ipmt(i), loan.ppmt(i))
+        ppaid += loan.ppmt(i)
+    print(ppaid)
 
     '''
     a = Asset(Money(1000000, USD), r)
